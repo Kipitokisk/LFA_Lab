@@ -24,14 +24,15 @@ public class Grammar {
     }
 
     public List<String> generateStrings(String startSymbol, int numStrings) {
-        List<String> strings = new ArrayList<>();
-        for (int i = 0; i < numStrings; i++) {
+        Set<String> Strings = new HashSet<>();
+        while (Strings.size() < numStrings) {
             StringBuilder sb = new StringBuilder();
             generateString(startSymbol, sb);
-            strings.add(sb.toString());
+            Strings.add(sb.toString());
         }
-        return strings;
+        return new ArrayList<>(Strings);
     }
+
 
     private void generateString(String symbol, StringBuilder sb) {
         if (!productions.containsKey(symbol)) {

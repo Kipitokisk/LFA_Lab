@@ -11,5 +11,9 @@ public class Main {
         productions.put("C", Arrays.asList("cB", "aA"));
         Grammar grammar = new Grammar(nonTerminals, terminals, productions);
 
+        List<String> strings = grammar.generateStrings("S", 5);
+        for (String str : strings) {
+            System.out.println(str);
+        }
     }
 }
