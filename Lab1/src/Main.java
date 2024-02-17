@@ -10,5 +10,6 @@ public class Main {
         productions.put("B", Arrays.asList("bC", "d"));
         productions.put("C", Arrays.asList("cB", "aA"));
         Grammar grammar = new Grammar(nonTerminals, terminals, productions);
+
     }
 }

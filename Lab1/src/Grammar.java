@@ -22,4 +22,30 @@ public class Grammar {
     public Map<String, List<String>> getProductions() {
         return productions;
     }
+
+    public List<String> generateStrings(String startSymbol, int numStrings) {
+        List<String> strings = new ArrayList<>();
+        for (int i = 0; i < numStrings; i++) {
+            StringBuilder sb = new StringBuilder();
+            generateString(startSymbol, sb);
+            strings.add(sb.toString());
+        }
+        return strings;
+    }
+
+    private void generateString(String symbol, StringBuilder sb) {
+        if (!productions.containsKey(symbol)) {
+            sb.append(symbol);
+            return;
+        }
+        List<String> choices = productions.get(symbol);
+        String choice = choices.get(new Random().nextInt(choices.size()));
+        for (char c : choice.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                generateString(String.valueOf(c), sb);
+            } else {
+                sb.append(c);
+            }
+        }
+    }
 }
