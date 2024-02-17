@@ -6,7 +6,7 @@ public class Main {
         Set<String> terminals = new HashSet<>(Arrays.asList("a", "b", "c", "d"));
         Map<String, List<String>> productions = new HashMap<>();
         productions.put("S", Collections.singletonList("dA"));
-        productions.put("A", Collections.singletonList("aB"));
+        productions.put("A", Arrays.asList("aB", "b"));
         productions.put("B", Arrays.asList("bC", "d"));
         productions.put("C", Arrays.asList("cB", "aA"));
         Grammar grammar = new Grammar(nonTerminals, terminals, productions);
@@ -15,5 +15,10 @@ public class Main {
         for (String str : strings) {
             System.out.println(str);
         }
+
+        FiniteAutomaton finiteAutomaton = grammar.toFiniteAutomaton();
+
+        String checkWord = "dabaabaabcbaabab";
+        System.out.println(finiteAutomaton.accepts(checkWord));
     }
 }

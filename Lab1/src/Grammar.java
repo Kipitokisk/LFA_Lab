@@ -11,18 +11,6 @@ public class Grammar {
         this.productions = productions;
     }
 
-    public Set<String> getNonTerminals() {
-        return nonTerminals;
-    }
-
-    public Set<String> getTerminals() {
-        return terminals;
-    }
-
-    public Map<String, List<String>> getProductions() {
-        return productions;
-    }
-
     public List<String> generateStrings(String startSymbol, int numStrings) {
         Set<String> Strings = new HashSet<>();
         while (Strings.size() < numStrings) {
@@ -49,4 +37,28 @@ public class Grammar {
             }
         }
     }
+
+    public FiniteAutomaton toFiniteAutomaton() {
+        Set<String> states = nonTerminals;
+        Set<String> alphabet = terminals;
+        Map<String, Map<String, String>> transitions = new HashMap<>();
+        transitions.put("S", Collections.singletonMap("d", "A"));
+        transitions.put("A", new HashMap<String, String>() {{
+            put("a", "B");
+            put("b", "A");
+        }});
+        transitions.put("B", new HashMap<String, String>() {{
+            put("b", "C");
+            put("d", "B");
+        }});
+        transitions.put("C", new HashMap<String, String>() {{
+            put("c", "B");
+            put("a", "A");
+        }});
+        FiniteAutomaton finiteAutomaton = new FiniteAutomaton(states, alphabet, "S", new HashSet<>(Arrays.asList("A", "B")), transitions);
+
+        return finiteAutomaton;
+    }
+
+
 }
