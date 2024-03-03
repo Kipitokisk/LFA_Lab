@@ -20,5 +20,7 @@ public class Main {
 
         String checkWord = "dabaabaabcbaabab";
         System.out.println(finiteAutomaton.accepts(checkWord));
+
+        System.out.println(grammar.classifyGrammar());
     }
 }

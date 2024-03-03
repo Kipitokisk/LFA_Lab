@@ -61,4 +61,39 @@ public class Grammar {
     }
 
 
+    public String classifyGrammar() {
+        boolean isRegular = true;
+        boolean isContextFree = true;
+        boolean isContextSensitive = true;
+        boolean isUnrestricted = true;
+
+        for (String nonTerminal : productions.keySet()) {
+            for (String production : productions.get(nonTerminal)) {
+                // Check if production is regular
+                if (production.length() > 2 || (production.length() == 2 && !Character.isLowerCase(production.charAt(1)))) {
+                    isRegular = false;
+                }
+
+                // Check if production is context-free
+                if (production.length() > 2) {
+                    isContextFree = false;
+                }
+
+                // Check if production is context-sensitive
+                if (!production.equals("ε") && production.length() < nonTerminal.length()) {
+                    isContextSensitive = false;
+                }
+            }
+        }
+
+        if (isRegular) {
+            return "Regular Grammar";
+        } else if (isContextFree) {
+            return "Context-Free Grammar";
+        } else if (isContextSensitive) {
+            return "Context-Sensitive Grammar";
+        } else {
+            return "Unrestricted Grammar";
+        }
+    }
 }
