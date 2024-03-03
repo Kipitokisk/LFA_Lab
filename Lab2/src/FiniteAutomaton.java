@@ -1,5 +1,5 @@
 import java.util.*;
-import java.util.stream.*;
+import java.util.stream.Collectors;
 
 class FiniteAutomaton {
     private Set<String> states;
@@ -36,38 +36,32 @@ class FiniteAutomaton {
 
     public Grammar convertToRegularGrammar() {
         Grammar grammar = new Grammar();
-        Set<String> nonTerminals = new HashSet<>();
-        Set<Character> terminals = new HashSet<>();
+
+        // Add non-terminals based on states
+        grammar.setNonTerminals(states);
+
+        // Add terminals based on alphabet
+        grammar.setTerminals(alphabet.stream().map(String::valueOf).collect(Collectors.toSet()));
+
         Map<String, Set<String>> productionRules = new HashMap<>();
 
-        // Add non-terminals for each state
-        for (String state : states) {
-            nonTerminals.add(state);
-        }
-
-        // Add terminals from the alphabet
-        for (char symbol : alphabet) {
-            terminals.add(symbol);
-        }
-
-        // Add production rules based on transitions
+        // Add transitions as production rules
         for (String state : states) {
             for (char symbol : alphabet) {
                 if (transitions.containsKey(state) && transitions.get(state).containsKey(symbol)) {
                     for (String nextState : transitions.get(state).get(symbol)) {
-                        String rule = state + " -> " + symbol + nextState;
+                        String rule = String.format("%s -> %s%s", state, symbol, nextState);
                         productionRules.computeIfAbsent(state, k -> new HashSet<>()).add(rule);
                     }
                 }
             }
         }
 
-        grammar.setNonTerminals(nonTerminals);
-        grammar.setTerminals(terminals);
         grammar.setProductionRules(productionRules);
-
         return grammar;
     }
+
+
 
     public boolean isDeterministic() {
         for (String state : states) {
@@ -86,7 +80,8 @@ class FiniteAutomaton {
         FiniteAutomaton dfa = new FiniteAutomaton();
         dfa.setStartState(startState);
         Set<Set<String>> newStates = new HashSet<>();
-        Set<String> initialState = epsilonClosure(startState);
+        Set<String> initialState = new HashSet<>();
+        initialState.add(startState);
         Map<Set<String>, String> stateMapping = new HashMap<>();
         newStates.add(initialState);
         stateMapping.put(initialState, startState);
@@ -106,7 +101,6 @@ class FiniteAutomaton {
                         nextState.addAll(transitions.get(state).get(symbol));
                     }
                 }
-                nextState = epsilonClosure(nextState);
                 if (!newStates.contains(nextState)) {
                     newStates.add(nextState);
                     String stateName = nextState.toString().replaceAll("[\\[\\],\\s]", "");
@@ -121,36 +115,6 @@ class FiniteAutomaton {
             }
         }
         return dfa;
-    }
-
-    private Set<String> epsilonClosure(String state) {
-        Set<String> closure = new HashSet<>();
-        closure.add(state);
-        if (transitions.containsKey(state) && transitions.get(state).containsKey(null)) {
-            for (String nextState : transitions.get(state).get(null)) {
-                if (!closure.contains(nextState)) {
-                    closure.addAll(epsilonClosure(nextState));
-                }
-            }
-        }
-        return closure;
-    }
-
-    private Set<String> epsilonClosure(Set<String> states) {
-        Set<String> closure = new HashSet<>(states);
-        Queue<String> queue = new LinkedList<>(states);
-        while (!queue.isEmpty()) {
-            String currentState = queue.poll();
-            if (transitions.containsKey(currentState) && transitions.get(currentState).containsKey(null)) {
-                for (String nextState : transitions.get(currentState).get(null)) {
-                    if (!closure.contains(nextState)) {
-                        closure.add(nextState);
-                        queue.add(nextState);
-                    }
-                }
-            }
-        }
-        return closure;
     }
 
     @Override

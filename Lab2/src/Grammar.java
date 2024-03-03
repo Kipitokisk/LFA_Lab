@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Grammar {
     private Set<String> nonTerminals;
-    private Set<Character> terminals;
+    private Set<String> terminals;
     private Map<String, Set<String>> productionRules;
 
     public Grammar() {
@@ -19,11 +19,11 @@ public class Grammar {
         this.nonTerminals = nonTerminals;
     }
 
-    public Set<Character> getTerminals() {
+    public Set<String> getTerminals() {
         return terminals;
     }
 
-    public void setTerminals(Set<Character> terminals) {
+    public void setTerminals(Set<String> terminals) {
         this.terminals = terminals;
     }
 
