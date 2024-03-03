@@ -36,8 +36,21 @@ class FiniteAutomaton {
 
     public Grammar convertToRegularGrammar() {
         Grammar grammar = new Grammar();
+        Set<String> nonTerminals = new HashSet<>();
+        Set<Character> terminals = new HashSet<>();
         Map<String, Set<String>> productionRules = new HashMap<>();
 
+        // Add non-terminals for each state
+        for (String state : states) {
+            nonTerminals.add(state);
+        }
+
+        // Add terminals from the alphabet
+        for (char symbol : alphabet) {
+            terminals.add(symbol);
+        }
+
+        // Add production rules based on transitions
         for (String state : states) {
             for (char symbol : alphabet) {
                 if (transitions.containsKey(state) && transitions.get(state).containsKey(symbol)) {
@@ -49,7 +62,10 @@ class FiniteAutomaton {
             }
         }
 
+        grammar.setNonTerminals(nonTerminals);
+        grammar.setTerminals(terminals);
         grammar.setProductionRules(productionRules);
+
         return grammar;
     }
 
