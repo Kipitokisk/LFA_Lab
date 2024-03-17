@@ -21,7 +21,7 @@ class Main {
         Grammar regularGrammar = fa.convertToRegularGrammar();
         System.out.println("Regular Grammar:");
         System.out.println(regularGrammar);
-        System.out.println("This grammar is:" + regularGrammar.classifyGrammar());
+        // System.out.println("This grammar is:" + regularGrammar.classifyGrammar());
 
         // Determine if FA is deterministic or non-deterministic
         String determinism = fa.isDeterministic() ? "Deterministic" : "Non-deterministic";

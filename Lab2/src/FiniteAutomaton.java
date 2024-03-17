@@ -36,11 +36,7 @@ class FiniteAutomaton {
 
     public Grammar convertToRegularGrammar() {
         Grammar grammar = new Grammar();
-
-        // Add non-terminals based on states
         grammar.setNonTerminals(states);
-
-        // Add terminals based on alphabet
         grammar.setTerminals(alphabet.stream().map(String::valueOf).collect(Collectors.toSet()));
 
         Map<String, Set<String>> productionRules = new HashMap<>();
