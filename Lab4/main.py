@@ -65,12 +65,10 @@ def options(sequence):
 
 
 regex1 = "M?(N){2}(O|P){3}Q*R+"
-print('Result: ', generateString(regex1))
-print('-' * 70)
+print(generateString(regex1))
 
 regex2 = "(X|Y|Z){3}8+(9|0){2}"
-print('Result: ', generateString(regex2))
-print('-' * 70)
+print(generateString(regex2))
 
 regex3 = "(H|i)(J|K)L*N?"
-print('Result: ', generateString(regex3))
+print(generateString(regex3))
