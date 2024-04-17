@@ -24,10 +24,10 @@ class Gramamr():
                 for v in value:
                     prod_copy = v
                     if ep in prod_copy:
-                        for c in prod_copy:
-                            # Delete empty string production and add new production
-                            if c == ep:
-                                value.append(prod_copy.replace(c, ''))
+                        # Generate all possible combinations without epsilon
+                        new_productions = [prod_copy.replace(c, '') for c in prod_copy if c != ep]
+                        value.extend(new_productions)
+
         # New copy with added production
         P1 = self.P.copy()
         # Remove empty string from copy
@@ -103,46 +103,34 @@ class Gramamr():
         return P4
 
     def TransformToCNF(self):
-        P5 = self.P.copy()
         temp = {}
+        new_symbol_counter = 0
 
-        #Free symbols
-        alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
-                      'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-        free_symbols = [v for v in alphabet if v not in self.P.keys()]
+        # Generate new symbols for CNF productions
+        def generate_new_symbol():
+            nonlocal new_symbol_counter
+            new_symbol_counter += 1
+            return f'X{new_symbol_counter}'
+
         for key, value in self.P.items():
-            for v in value:
+            new_productions = []
+            for production in value:
+                while len(production) > 2:
+                    new_symbol = generate_new_symbol()
+                    temp[new_symbol] = production[:2]
+                    new_productions.append(new_symbol)
+                    production = production[2:]
+                new_productions.append(production)
+            self.P[key] = new_productions
 
-                # Production satisfies CNF
-                if (len(v) == 1 and v in self.V_T) or (len(v) == 2 and v.isupper()):
-                    continue
-                else:
+        # Remove epsilon productions
+        for key, value in self.P.items():
+            self.P[key] = [v for v in value if v != '']
 
-                    #Split prod in 2 parts
-                    left = v[:len(v) // 2]
-                    right = v[len(v) // 2:]
+        # Add new symbols to the grammar
+        self.P.update(temp)
 
-                    #Get new symbols
-                    if left in temp.values():
-                        temp_key1 = ''.join([i for i in temp.keys() if temp[i] == left])
-                    else:
-                        temp_key1 = free_symbols.pop(0)
-                        temp[temp_key1] = left
-                    if right in temp.values():
-                        temp_key2 = ''.join([i for i in temp.keys() if temp[i] == right])
-                    else:
-                        temp_key2 = free_symbols.pop(0)
-                        temp[temp_key2] = right
-
-                    #Replace prod with new symbols
-                    P5[key] = [temp_key1 + temp_key2 if item == v else item for item in P5[key]]
-
-        #Add new productions
-        for key, value in temp.items():
-            P5[key] = [value]
-
-        print(f"5. Final Grammar:\n{P5}")
-        return P5
+        print(f"5. Final Grammar:\n{self.P}")
 
     def ReturnProductions(self):
         print(f"Initial Grammar:\n{self.P}")
