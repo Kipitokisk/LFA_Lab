@@ -10,7 +10,7 @@ class Gramamr():
         self.V_T = ['a', 'b', 'd']
 
     def RemoveEpsilon(self):
-        # Find occurence of empty string
+        # Find occurrences of empty string
         nt_epsilon = []
         for key, value in self.P.items():
             s = key
@@ -20,31 +20,25 @@ class Gramamr():
                     nt_epsilon.append(s)
 
         for key, value in self.P.items():
+            new_productions = []
             for ep in nt_epsilon:
                 for v in value:
                     prod_copy = v
                     if ep in prod_copy:
                         # Generate all possible combinations without epsilon
-                        new_productions = [prod_copy.replace(c, '') for c in prod_copy if c != ep]
-                        value.extend(new_productions)
+                        new_productions.extend([prod_copy.replace(c, '') for c in prod_copy if c != ep])
+            value.extend(new_productions)
 
-        # New copy with added production
+        # Remove epsilon from the productions
         P1 = self.P.copy()
-        # Remove empty string from copy
         for key, value in self.P.items():
-            for v in value:
-                if v == 'eps':
-                    P1[key].remove(v)
+            P1[key] = [v for v in value if v != 'eps']
 
-        P_final = {}
-        for key, value in P1.items():
-            if len(value) != 0:
-                P_final[key] = value
-            else:
-                self.V_N.remove(key)
-
-        print(f"1.No epsilon productions:\n{P_final}")
+        # Remove non-productive symbols
+        P_final = {key: value for key, value in P1.items() if value}
         self.P = P_final.copy()
+
+        print(f"1. No epsilon productions:\n{P_final}")
         return P_final
 
     def EliminateUnitProd(self):
@@ -71,7 +65,6 @@ class Gramamr():
         for el in accesible_symbols:
             del P3[el]
         print(f"3.No inaccesible productions:\n{P3}")
-        print(self.V_N)
         self.P = P3.copy()
         return P3
 
